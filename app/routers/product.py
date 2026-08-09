@@ -238,6 +238,44 @@ def edit_product(
 
 
 # ============================================================
+# Get Delete PRODUCT
+# ============================================================
+
+
+@router.get("/products/{product_id}/delete")
+def delete_product_page(
+    request: Request,
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(login_required),
+):
+    product = product_service.get_product_by_id(
+        db,
+        product_id,
+    )
+
+    if product is None or not product.is_active:
+        set_flash(
+            request,
+            "Product not found.",
+            FlashCategory.ERROR,
+        )
+
+        return RedirectResponse(
+            url="/products",
+            status_code=303,
+        )
+
+    return render(
+        request=request,
+        template="products/delete.html",
+        title="Delete Product",
+        product=product,
+        current_user=current_user,
+    )
+
+
+# ============================================================
 # DELETE PRODUCT
 # ============================================================
 

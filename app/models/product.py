@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -18,6 +18,12 @@ class Product(Base):
     category_id = Column(
         Integer,
         ForeignKey("categories.id"),
+        nullable=False,
+    )
+
+    is_active = Column(
+        Boolean,
+        default=True,
         nullable=False,
     )
 

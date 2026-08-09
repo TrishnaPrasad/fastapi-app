@@ -35,7 +35,7 @@ class ProductService:
         db: Session,
         product_id: int,
     ):
-        return self.product_repository.get_product_by_id(
+        return self.product_repository.get_active_product_by_id(
             db,
             product_id,
         )
@@ -46,7 +46,7 @@ class ProductService:
         product_id: int,
         product: ProductUpdate,
     ):
-        db_product = self.product_repository.get_product_by_id(
+        db_product = self.product_repository.get_active_product_by_id(
             db,
             product_id,
         )
@@ -73,7 +73,7 @@ class ProductService:
         db: Session,
         product_id: int,
     ):
-        db_product = self.product_repository.get_product_by_id(
+        db_product = self.product_repository.get_active_product_by_id(
             db,
             product_id,
         )

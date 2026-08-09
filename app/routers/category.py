@@ -191,7 +191,7 @@ def delete_category_page(
     db: Session = Depends(get_db),
     current_user: User = Depends(login_required),
 ):
-    category = category_service.get_category_by_id(
+    category = category_service.get_active_category_by_id(
         db,
         category_id,
     )

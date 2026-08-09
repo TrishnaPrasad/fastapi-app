@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -14,6 +14,12 @@ class Category(Base):
     name = Column(String(100), nullable=False, unique=True)
 
     description = Column(String(255), nullable=True)
+
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False,
+    )
 
     created_at = Column(
         DateTime(timezone=True),

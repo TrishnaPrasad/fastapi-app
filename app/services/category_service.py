@@ -28,7 +28,7 @@ class CategoryService:
         return self.category_repository.get_all_categories(db)
 
     def get_category_by_id(self, db: Session, category_id: int):
-        return self.category_repository.get_category_by_id(
+        return self.category_repository.get_active_category_by_id(
             db,
             category_id,
         )
@@ -39,7 +39,7 @@ class CategoryService:
         category_id: int,
         category: CategoryUpdate,
     ):
-        db_category = self.category_repository.get_category_by_id(
+        db_category = self.category_repository.get_active_category_by_id(
             db,
             category_id,
         )
@@ -63,10 +63,11 @@ class CategoryService:
 
     def delete_category(self, db: Session, category_id: int):
 
-        db_category = self.category_repository.get_category_by_id(
+        db_category = self.category_repository.get_active_category_by_id(
             db,
             category_id,
         )
+        print(db_category)
 
         if db_category is None:
             return None
