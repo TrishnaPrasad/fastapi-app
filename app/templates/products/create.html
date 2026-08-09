@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Create Product</h2>
+        <a href="/products" class="btn btn-secondary">
+            Back to Products
+        </a>
+    </div>
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="/products/create">
+                <!-- Product Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">
+                        Product Name
+                    </label>
+                    <input type="text" class="form-control" id="name" name="name"
+                        value="{{ form_data.name if form_data else '' }}" required>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">
+                        Description
+                    </label>
+                    <textarea class="form-control" id="description" name="description"
+                        rows="3">{{ form_data.description if form_data else '' }}</textarea>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-3">
+                    <label for="price" class="form-label">
+                        Price
+                    </label>
+                    <input type="number" class="form-control" id="price" name="price" step="0.01" min="0"
+                        value="{{ form_data.price if form_data else '' }}" required>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label for="category_id" class="form-label">
+                        Category
+                    </label>
+                    <select class="form-select" id="category_id" name="category_id" required>
+                        <option value="">
+                            -- Select Category --
+                        </option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if form_data and form_data.category_id==category.id %}
+                            selected {% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <button type="submit" class="btn btn-primary">
+                    Create Product
+                </button>
+                <a href="/products" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

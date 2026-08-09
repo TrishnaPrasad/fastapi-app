@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Dashboard</h2>
+    <hr>
+    <div class="alert alert-success">
+        Welcome <strong>{{ current_user.username }}</strong>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Products</h5>
+                    <p>Manage Products</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Categories</h5>
+                    <p>Manage Categories</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Customers</h5>
+                    <p>Manage Customers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Orders</h5>
+                    <p>Manage Orders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

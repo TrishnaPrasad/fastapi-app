@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>User Registration</h3>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    <form action="/register" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" placeholder="Enter username" name="username"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" placeholder="Enter email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" placeholder="Enter password" name="password"
+                                required>
+                        </div>
+                        <button class="btn btn-primary w-100">
+                            Register
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

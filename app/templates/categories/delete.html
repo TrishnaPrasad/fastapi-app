@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Delete Category</h2>
+    <div class="alert alert-warning">
+        Are you sure you want to delete
+        <strong>{{ category.name }}</strong>?
+    </div>
+    <form method="post" action="/categories/{{ category.id }}/delete">
+        <button type="submit" class="btn btn-danger">
+            Yes, Delete
+        </button>
+        <a href="/categories" class="btn btn-secondary">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}
