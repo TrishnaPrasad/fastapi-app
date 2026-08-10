@@ -87,3 +87,13 @@ class ProductService:
         )
 
         return True
+
+    def has_active_products_by_category(
+        self,
+        db: Session,
+        category_id: int,
+    ):
+        return self.product_repository.has_active_products_by_category(
+            db,
+            category_id,
+        )

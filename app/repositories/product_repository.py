@@ -25,7 +25,12 @@ class ProductRepository:
         return db_product
 
     def get_all_products(self, db: Session):
-        return db.query(Product).order_by(Product.name).all()
+        return (
+            db.query(Product)
+            .filter(Product.is_active.is_(True))
+            .order_by(Product.name)
+            .all()
+        )
 
     def get_product_by_id(
         self,

@@ -6,6 +6,10 @@
         Are you sure you want to delete
         <strong>{{ category.name }}</strong>?
     </div>
+    <div class="alert alert-warning">
+        The category will be archived and will no longer appear
+        in the category list.
+    </div>
     <form method="post" action="/categories/{{ category.id }}/delete">
         <button type="submit" class="btn btn-danger">
             Yes, Delete

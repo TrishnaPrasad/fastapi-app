@@ -67,12 +67,14 @@ class CategoryService:
             db,
             category_id,
         )
-        print(db_category)
 
         if db_category is None:
             return None
 
-        if db_category.products:
+        if self.category_repository.has_active_products(
+            db,
+            category_id,
+        ):
             return False
 
         self.category_repository.delete_category(

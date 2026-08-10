@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.category import Category
+from app.models.product import Product
 from app.schemas.category import CategoryCreate, CategoryUpdate
 
 
@@ -44,7 +45,14 @@ class CategoryRepository:
         )
 
     def get_category_by_name(self, db: Session, name: str):
-        return db.query(Category).filter(Category.name == name).first()
+        return (
+            db.query(Category)
+            .filter(
+                Category.name == name,
+                Category.is_active.is_(True),
+            )
+            .first()
+        )
 
     def update_category(
         self,
@@ -70,3 +78,18 @@ class CategoryRepository:
         db.refresh(db_category)
 
         return db_category
+
+    def has_active_products(
+        self,
+        db: Session,
+        category_id: int,
+    ):
+        return (
+            db.query(Product)
+            .filter(
+                Product.category_id == category_id,
+                Product.is_active.is_(True),
+            )
+            .first()
+            is not None
+        )
