@@ -1,5 +1,3 @@
-from urllib import request
-
 from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import RedirectResponse
 
@@ -13,6 +11,11 @@ from app.schemas.user import UserCreate
 from app.services.user_service import UserService
 
 from app.core.template import render
+
+from app.core.security import create_access_token
+from app.services.refresh_token_service import RefreshTokenService
+
+refresh_token_service = RefreshTokenService()
 
 router = APIRouter()
 # templates = Jinja2Templates(directory="app/templates")
@@ -93,6 +96,17 @@ def login_user(
             title="Login",
             error="Invalid email or password.",
         )
+
+    access_token = create_access_token(user.id)
+
+    refresh_token, refresh_token_record = refresh_token_service.create_refresh_token(
+        db=db,
+        user_id=user.id,
+    )
+
+    print("ACCESS TOKEN CREATED:", access_token)
+    print("REFRESH TOKEN CREATED:", refresh_token)
+    print("REFRESH TOKEN DB ID:", refresh_token_record.id)
 
     request.session["user_id"] = user.id
 
