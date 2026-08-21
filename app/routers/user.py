@@ -111,12 +111,55 @@ def login_user(
     request.session["user_id"] = user.id
 
     set_flash(request, f"Welcome back, {user.username}!", FlashCategory.SUCCESS)
-    return RedirectResponse(url="/dashboard", status_code=303)
+
+    response = RedirectResponse(
+        url="/dashboard",
+        status_code=303,
+    )
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,  # True in production with HTTPS
+        samesite="lax",
+        max_age=5 * 60,
+    )
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=False,  # True in production with HTTPS
+        samesite="lax",
+        max_age=7 * 24 * 60 * 60,
+    )
+
+    return response
+
+
+# @router.get("/logout")
+# def logout(request: Request):
+# request.session.pop("user_id", None)
+
+# set_flash(request, "Logged out successfully.", FlashCategory.SUCCESS)
+# return RedirectResponse(url="/login", status_code=303)
 
 
 @router.get("/logout")
 def logout(request: Request):
-    request.session.pop("user_id", None)
+    set_flash(
+        request,
+        "Logged out successfully.",
+        FlashCategory.SUCCESS,
+    )
 
-    set_flash(request, "Logged out successfully.", FlashCategory.SUCCESS)
-    return RedirectResponse(url="/login", status_code=303)
+    response = RedirectResponse(
+        url="/login",
+        status_code=303,
+    )
+
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+
+    return response
