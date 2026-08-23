@@ -9,6 +9,7 @@ from app.core.flash import set_flash, get_flash
 from app.database import get_db
 from app.schemas.user import UserCreate
 from app.services.user_service import UserService
+import app.config as settings
 
 from app.core.template import render
 
@@ -104,8 +105,9 @@ def login_user(
         user_id=user.id,
     )
 
-    print("ACCESS TOKEN CREATED:", access_token)
-    print("REFRESH TOKEN CREATED:", refresh_token)
+    print("LOGIN USER:", user.id)
+    print("ACCESS TOKEN CREATED")
+    print("REFRESH TOKEN CREATED")
     print("REFRESH TOKEN DB ID:", refresh_token_record.id)
 
     request.session["user_id"] = user.id
@@ -123,7 +125,7 @@ def login_user(
         httponly=True,
         secure=False,  # True in production with HTTPS
         samesite="lax",
-        max_age=5 * 60,
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
 
     response.set_cookie(
@@ -132,7 +134,7 @@ def login_user(
         httponly=True,
         secure=False,  # True in production with HTTPS
         samesite="lax",
-        max_age=7 * 24 * 60 * 60,
+        max_age=settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
     )
 
     return response
@@ -147,7 +149,18 @@ def login_user(
 
 
 @router.get("/logout")
-def logout(request: Request):
+def logout(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    refresh_token = request.cookies.get("refresh_token")
+
+    if refresh_token:
+        refresh_token_service.revoke_by_token(
+            db=db,
+            token=refresh_token,
+        )
+
     set_flash(
         request,
         "Logged out successfully.",

@@ -1,19 +1,12 @@
-from fastapi import Depends, Request, Response
-from fastapi.responses import RedirectResponse
 import jwt
-from sqlalchemy.orm import Session
-from fastapi import HTTPException
-from fastapi import Depends
-from app.core.exceptions import LoginRequiredException
-from app.core.flash import set_flash
 
+from fastapi import Depends, Request
+from sqlalchemy.orm import Session
+
+from app.core.exceptions import LoginRequiredException
 from app.core.security import decode_token
 from app.database import get_db
 from app.models.user import User
-
-from app.services.refresh_token_service import RefreshTokenService
-
-refresh_token_service = RefreshTokenService()
 
 # def get_current_user(request: Request, db: Session = Depends(get_db)):
 #     user_id = request.session.get("user_id")
@@ -26,10 +19,16 @@ refresh_token_service = RefreshTokenService()
 
 def get_current_user(
     request: Request,
-    response: Response,
     db: Session = Depends(get_db),
 ):
-    access_token = request.cookies.get("access_token")
+    access_token = getattr(
+        request.state,
+        "access_token",
+        None,
+    )
+
+    if access_token is None:
+        access_token = request.cookies.get("access_token")
 
     if not access_token:
         return None
@@ -44,54 +43,6 @@ def get_current_user(
 
         if not user_id:
             return None
-
-    except jwt.ExpiredSignatureError:
-
-        refresh_token = request.cookies.get("refresh_token")
-
-        if not refresh_token:
-            return None
-
-        try:
-            result = refresh_token_service.rotate_refresh_token(
-                db=db,
-                refresh_token=refresh_token,
-            )
-
-        except jwt.PyJWTError:
-            return None
-
-        if result is None:
-            return None
-
-        (
-            access_token,
-            new_refresh_token,
-            _,
-        ) = result
-
-        # Replace expired access token.
-        response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,
-            secure=False,
-            samesite="lax",
-            max_age=5 * 60,
-        )
-
-        # Replace rotated refresh token.
-        response.set_cookie(
-            key="refresh_token",
-            value=new_refresh_token,
-            httponly=True,
-            secure=False,
-            samesite="lax",
-            max_age=7 * 24 * 60 * 60,
-        )
-
-        new_payload = decode_token(access_token)
-        user_id = new_payload.get("sub")
 
     except jwt.PyJWTError:
         return None

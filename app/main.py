@@ -7,6 +7,8 @@ from app.routers import home, user, dashboard, category, product
 from app.core.exceptions import LoginRequiredException
 from app.core.handlers import login_required_exception_handler
 
+from app.middleware.auth import AuthenticationMiddleware
+
 app = FastAPI(title="Inventory Management System")
 app.add_exception_handler(
     LoginRequiredException,
@@ -15,6 +17,8 @@ app.add_exception_handler(
 app.add_middleware(SessionMiddleware, secret_key="this-is-a-secret-key")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+app.add_middleware(AuthenticationMiddleware)
 
 app.include_router(home.router)
 app.include_router(user.router)
